@@ -1,8 +1,10 @@
 <?php
+	session_start();
 	spl_autoload_register(function($class){
 		include("Classes/".$class.".php");
 	});
 	$database = new Database();
+	$view = new View();
 ?>
 <!DOCTYPE>
 <html>
@@ -24,31 +26,35 @@
 					</div>
 				</div>
 				<div class="panel-body">
-				<form method="post" action="php/post.php" enctype="multipart/form-data">				
-					<div class="form-group">
-						<label>Product Name</label>
-						<input class="form-control" name="name"></input>
-					</div>
-					<div class="form-group">
-						<label>Price</label>
-						<input class="form-control" name="price"></input>
-					</div>
-					<div class="form-group">
-						<label>Description</label>
-						<textarea class="form-control" name="description" rows="5"></textarea>
-					</div>
-					<div class="form-group">
-						<label>Photo</label>
-						<input class="form-control" name="photo" type="file" accept="image/*"></input>
-					</div>
-					<div class="form-group">
-						<label>Publish On</label>
-						<input class="form-control" name="published_at" type="date"></input>
-					</div>
-					<div class="form-group">
-						<input type="submit" class="form-control" value="POST"></input>
-					</div>
-				</form>
+					<?php
+						if(isset($_GET['page'])){
+							if($_GET['page'] == "create"){
+								$view->createProduct();
+							}elseif($_GET['page'] == "cart"){
+								foreach($_SESSION['cart'] as $id){
+									$product = $database->select("*","products","where id = ".$id);
+									$product = $product[0];
+									$view->cart($product);
+								}
+							}
+						}elseif(isset($_GET['product'])){
+							$id = $_GET['product'];
+							$products = $database->select("*","products","where id = ".$id);
+							$product = $products[0];
+							$view->productDetails($product);
+						}else{
+							?>
+						<div clas="row">
+							<a href="?page=create" class="btn">Tambah Produk</a>
+							<a href="?page=cart" class="btn">Keranjang</a>
+						</div>
+						<?php
+							$products = $database->select("*","products","order by published_at desc");
+							foreach($products as $product){
+								$view->product($product);
+							}
+						}
+					?>
 				</div>
 			</div>
 		</div>

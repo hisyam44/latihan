@@ -32,3 +32,23 @@ input{
 	float: none;
 	margin:0 auto;
 }
+.btn{
+	padding: 6px 12px;
+	height: 34px;
+	border: 1px solid #ccc;
+	text-decoration: none;
+	color: #fff;
+	background: #5bc0de;
+}
+img{
+	width: 100%;
+}
+.product{
+	margin-top: 20px;
+}
+.product-text{
+	padding: 0px 10px;
+}
+.padding-top{
+	padding-top:10px;
+}
